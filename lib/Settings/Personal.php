@@ -58,8 +58,6 @@ class Personal implements ISettings {
 		$zimbraUserDisplayName = $this->config->getUserValue($this->userId, Application::APP_ID, 'user_displayname');
 		$adminUrl = $this->config->getAppValue(Application::APP_ID, 'admin_instance_url');
 		$url = $this->config->getUserValue($this->userId, Application::APP_ID, 'url', $adminUrl) ?: $adminUrl;
-		$appPasswordIsSet = $this->config->getUserValue($this->userId, Application::APP_ID, 'app_password', '') !== '';
-
 		$userConfig = [
 			'token' => $token ? 'dummyTokenContent' : '',
 			'url' => $url,
@@ -68,7 +66,6 @@ class Personal implements ISettings {
 			'user_displayname' => $zimbraUserDisplayName,
 			'search_mails_enabled' => $searchMailsEnabled,
 			'navigation_enabled' => $navigationEnabled,
-			'app_password_is_set' => $appPasswordIsSet,
 		];
 		$this->initialStateService->provideInitialState('user-config', $userConfig);
 		return new TemplateResponse(Application::APP_ID, 'personalSettings');
