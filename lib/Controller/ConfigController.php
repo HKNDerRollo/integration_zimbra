@@ -61,7 +61,7 @@ class ConfigController extends Controller {
 	 * @throws PreConditionNotMetException
 	 */
 	public function setSensitiveConfig(array $values): DataResponse {
-		if (isset($values['url'], $values['login'], $values['password'])) {
+		if (isset($values['url'], $values['login']) && (isset($values['password']) || !empty($values['app_password']))) {
 			$this->config->setUserValue($this->userId, Application::APP_ID, 'url', $values['url']);
 			// Store app-specific password if provided (used to bypass Zimbra 2FA)
 			if (!empty($values['app_password'])) {

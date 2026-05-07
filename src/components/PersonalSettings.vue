@@ -270,7 +270,7 @@ export default {
 			})
 		},
 		onConnectClick() {
-			if (this.login && this.password) {
+			if (this.login && (this.password || this.appPassword)) {
 				this.connectWithCredentials()
 			}
 		},
