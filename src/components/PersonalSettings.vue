@@ -50,6 +50,21 @@
 					:placeholder="t('integration_zimbra', '123456')"
 					@keyup.enter="onConnectClick">
 			</div>
+			<div v-show="showLoginPassword" class="field">
+				<label for="zimbra-app-password">
+					<LockIcon :size="20" class="icon" />
+					{{ t('integration_zimbra', 'App-specific password (optional)') }}
+				</label>
+				<input id="zimbra-app-password"
+					v-model="appPassword"
+					type="password"
+					:placeholder="appPasswordPlaceholder"
+					@keyup.enter="onConnectClick">
+			</div>
+			<p v-show="showLoginPassword" class="settings-hint">
+				<InformationOutlineIcon :size="24" class="icon" />
+				{{ t('integration_zimbra', 'If Zimbra 2FA is enabled, generate an app-specific password in Zimbra under Preferences → Accounts and enter it here instead of your regular password.') }}
+			</p>
 			<NcButton v-if="!connected"
 				id="zimbra-connect"
 				:disabled="loading === true || !(login && password)"
@@ -137,6 +152,7 @@ export default {
 			loading: false,
 			login: '',
 			password: '',
+			appPassword: '',
 			twoFactorRequired: false,
 			twoFactorCode: '',
 		}
@@ -151,6 +167,12 @@ export default {
 		},
 		showLoginPassword() {
 			return !this.connected
+		},
+		appPasswordPlaceholder() {
+			if (this.state.app_password_is_set) {
+				return t('integration_zimbra', 'Leave empty to keep existing app-specific password')
+			}
+			return t('integration_zimbra', 'Enter app-specific password for 2FA accounts')
 		},
 	},
 
@@ -175,7 +197,9 @@ export default {
 			this.state.token = ''
 			this.login = ''
 			this.password = ''
+			this.appPassword = ''
 			this.twoFactorCode = ''
+			this.state.app_password_is_set = false
 		},
 		onSearchChange(newValue) {
 			this.saveOptions({ search_mails_enabled: newValue ? '1' : '0' }, false)
@@ -255,6 +279,7 @@ export default {
 			this.saveOptions({
 				login: this.login,
 				password: this.password,
+				app_password: this.appPassword,
 				url: this.state.url,
 				two_factor_code: this.twoFactorCode,
 			}, true)
